@@ -5,12 +5,17 @@ export default function OverviewScreen({
   onDone,
   onBack, // optional: go back to intro
 }) {
+  const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
     const handler = (e) => {
       const key = e.key.toLowerCase();
       if (key === "enter" || key === " " || key === "spacebar") {
         e.preventDefault();
+        if (!isRevealed) {
+          setIsRevealed(true);
+          return;
+        }
         onDone?.();
       } else if (key === "b") {
         // optional: go back to intro
@@ -19,7 +24,7 @@ export default function OverviewScreen({
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onDone, onBack]);
+  }, [onDone, onBack, isRevealed]);
 
   // Tile component for the 4 steps
   const Tile = ({ title, subtitle }) => (
@@ -48,73 +53,83 @@ export default function OverviewScreen({
           What does a software engineer do?
         </div>
 
-        <div
-          style={{
-            fontSize: 22,
-            opacity: 0.85,
-            marginBottom: 26,
-            lineHeight: 1.4,
-          }}
-        >
-          We break problems into steps, tell a computer what to do, try it, and
-          fix it until it works. You’ll see all four today.
-        </div>
+        {!isRevealed && (
+          <div style={{ fontSize: 18, opacity: 0.7 }}>
+            Press Space to reveal the rest
+          </div>
+        )}
 
-        <div
-          style={{
-            display: "flex",
-            gap: 18,
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginBottom: 28,
-          }}
-        >
-          <Tile title="Build" subtitle="Make something (a program)" />
-          <Tile title="Test" subtitle="Try it out" />
-          <Tile title="Fix" subtitle="Find and correct mistakes" />
-          <Tile title="Ship" subtitle="Share it with people" />
-        </div>
+        {isRevealed && (
+          <>
+            <div
+              style={{
+                fontSize: 22,
+                opacity: 0.85,
+                marginBottom: 26,
+                lineHeight: 1.4,
+              }}
+            >
+              We break problems into steps, tell a computer what to do, try it,
+              and fix it until it works. You’ll see all four today.
+            </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 8,
-          }}
-        >
-          <button
-            onClick={() => onDone?.()}
-            style={{
-              fontSize: 20,
-              padding: "12px 20px",
-              borderRadius: 12,
-              border: "2px solid #111",
-              background: "#fff",
-              color: "#111",
-              cursor: "pointer",
-              fontWeight: 800,
-            }}
-          >
-            Continue (Enter / Space)
-          </button>
+            <div
+              style={{
+                display: "flex",
+                gap: 18,
+                justifyContent: "center",
+                flexWrap: "wrap",
+                marginBottom: 28,
+              }}
+            >
+              <Tile title="Build" subtitle="Make something (a program)" />
+              <Tile title="Test" subtitle="Try it out" />
+              <Tile title="Fix" subtitle="Find and correct mistakes" />
+              <Tile title="Ship" subtitle="Share it with people" />
+            </div>
 
-          <button
-            onClick={() => onBack?.()}
-            style={{
-              fontSize: 18,
-              padding: "10px 16px",
-              borderRadius: 12,
-              border: "2px dashed #666",
-              background: "#fff",
-              color: "#111",
-              cursor: "pointer",
-            }}
-          >
-            Back to Intro (B)
-          </button>
-        </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 8,
+              }}
+            >
+              <button
+                onClick={() => onDone?.()}
+                style={{
+                  fontSize: 20,
+                  padding: "12px 20px",
+                  borderRadius: 12,
+                  border: "2px solid #111",
+                  background: "#fff",
+                  color: "#111",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                }}
+              >
+                Continue (Enter / Space)
+              </button>
+
+              <button
+                onClick={() => onBack?.()}
+                style={{
+                  fontSize: 18,
+                  padding: "10px 16px",
+                  borderRadius: 12,
+                  border: "2px dashed #666",
+                  background: "#fff",
+                  color: "#111",
+                  cursor: "pointer",
+                }}
+              >
+                Back to Intro (B)
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
